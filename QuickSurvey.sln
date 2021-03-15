@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31105.61
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickSurvey.ConsoleApp", "QuickSurvey.Console\QuickSurvey.ConsoleApp.csproj", "{54C7F06B-F8DD-4D76-BED6-919719FD635D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickSurvey.Core", "QuickSurvey.Domain\QuickSurvey.Core.csproj", "{1ED70109-CEAA-40A1-B167-9C20B6BF3EA5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{54C7F06B-F8DD-4D76-BED6-919719FD635D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54C7F06B-F8DD-4D76-BED6-919719FD635D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54C7F06B-F8DD-4D76-BED6-919719FD635D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54C7F06B-F8DD-4D76-BED6-919719FD635D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1ED70109-CEAA-40A1-B167-9C20B6BF3EA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ED70109-CEAA-40A1-B167-9C20B6BF3EA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ED70109-CEAA-40A1-B167-9C20B6BF3EA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ED70109-CEAA-40A1-B167-9C20B6BF3EA5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5CCDEFC1-D78A-4139-BE90-434D2F669523}
+	EndGlobalSection
+EndGlobal
