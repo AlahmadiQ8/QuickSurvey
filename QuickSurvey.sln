@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickSurvey.ConsoleApp", "Q
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickSurvey.Core", "QuickSurvey.Domain\QuickSurvey.Core.csproj", "{1ED70109-CEAA-40A1-B167-9C20B6BF3EA5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickSurvey.Infrastructure", "QuickSurvey.Infrastructure\QuickSurvey.Infrastructure.csproj", "{ED2D4260-4E9F-4EC5-BA09-0695884AD441}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{1ED70109-CEAA-40A1-B167-9C20B6BF3EA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1ED70109-CEAA-40A1-B167-9C20B6BF3EA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1ED70109-CEAA-40A1-B167-9C20B6BF3EA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED2D4260-4E9F-4EC5-BA09-0695884AD441}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED2D4260-4E9F-4EC5-BA09-0695884AD441}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED2D4260-4E9F-4EC5-BA09-0695884AD441}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED2D4260-4E9F-4EC5-BA09-0695884AD441}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
