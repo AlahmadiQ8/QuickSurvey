@@ -25,7 +25,7 @@ namespace QuickSurvey.Core.SessionAggregate
             _choices = new List<Choice>();
         }
 
-        public Session(string name)
+        public Session(string name) : this()
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             _dateCreated = DateTime.UtcNow;
@@ -34,7 +34,7 @@ namespace QuickSurvey.Core.SessionAggregate
         public void AddParticipant(string userName)
         {
             var existingParticipant = _participants.SingleOrDefault(p =>
-                string.Equals(p.UserName, userName, StringComparison.CurrentCultureIgnoreCase));
+                string.Equals(p.Username, userName, StringComparison.CurrentCultureIgnoreCase));
 
             if (existingParticipant != null)
             {
@@ -52,14 +52,6 @@ namespace QuickSurvey.Core.SessionAggregate
                 throw new SessionExceptions($"Choices cannot exceed a maximum of {MaxNumberOfChoices}");
             }
 
-            foreach (var choice in choiceTexts)
-            {
-                if (string.IsNullOrEmpty(choice))
-                {
-                    throw new SessionExceptions("Choice cannot be empty");
-                }
-            }
-
             if (choiceTexts.Distinct().Count() != choiceTexts.Length)
             {
                 throw new SessionExceptions("Choices cannot have duplicates");
@@ -71,12 +63,12 @@ namespace QuickSurvey.Core.SessionAggregate
             }
         }
 
-        public void SetVote(int participantId, int choiceId)
+        public void SetVote(string username, int choiceId)
         {
-            var participant = _participants.SingleOrDefault(p => p.Id == participantId);
+            var participant = _participants.SingleOrDefault(p => p.Username == username);
             if (participant == null)
             {
-                throw new SessionExceptions($"No participant with id = {participantId} found");
+                throw new SessionExceptions($"No participant with id = {username} found");
             }
 
             var choice = _choices.SingleOrDefault(c => c.Id == choiceId);
@@ -85,7 +77,7 @@ namespace QuickSurvey.Core.SessionAggregate
                 throw new SessionExceptions($"No choice with id = {choiceId} found");
 ;           }
 
-            choice.AddParticipantVote(participant);
+            choice.AddParticipantVote(participant.Username);
         }
     }
 }
