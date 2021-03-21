@@ -9,7 +9,7 @@ using QuickSurvey.Infrastructure;
 namespace QuickSurvey.Infrastructure.Migrations
 {
     [DbContext(typeof(SurveyContext))]
-    [Migration("20210321013508_Init")]
+    [Migration("20210321043323_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,7 +36,7 @@ namespace QuickSurvey.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sessions", "quicksurvey");
+                    b.ToTable("Sessions");
                 });
 
             modelBuilder.Entity("QuickSurvey.Core.SessionAggregate.Session", b =>

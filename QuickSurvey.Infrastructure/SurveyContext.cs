@@ -11,7 +11,7 @@ namespace QuickSurvey.Infrastructure
     public class SurveyContext : DbContext, IUnitOfWork
     {
         public const string ConnectionString = "Data Source=(localdb)\\DEVELOPMENT;Database=quicksurvey;Connect Timeout=30";
-        public const string DefaultSchema = "quicksurvey";
+        
         public DbSet<Session> Sessions { get; set; }
         public DbSet<Participant> Participants { get; set; }
         public DbSet<Choice> Choices { get; set; }

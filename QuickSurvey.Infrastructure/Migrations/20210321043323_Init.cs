@@ -6,16 +6,12 @@ namespace QuickSurvey.Infrastructure.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.EnsureSchema(
-                name: "quicksurvey");
-
             migrationBuilder.CreateSequence(
                 name: "sessionseq",
                 incrementBy: 10);
 
             migrationBuilder.CreateTable(
                 name: "Sessions",
-                schema: "quicksurvey",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
@@ -42,7 +38,6 @@ namespace QuickSurvey.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Choices_Sessions_SessionId",
                         column: x => x.SessionId,
-                        principalSchema: "quicksurvey",
                         principalTable: "Sessions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -63,7 +58,6 @@ namespace QuickSurvey.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Participants_Sessions_SessionId",
                         column: x => x.SessionId,
-                        principalSchema: "quicksurvey",
                         principalTable: "Sessions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -103,8 +97,7 @@ namespace QuickSurvey.Infrastructure.Migrations
                 name: "Participants");
 
             migrationBuilder.DropTable(
-                name: "Sessions",
-                schema: "quicksurvey");
+                name: "Sessions");
 
             migrationBuilder.DropSequence(
                 name: "sessionseq");

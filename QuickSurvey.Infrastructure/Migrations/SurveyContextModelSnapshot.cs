@@ -34,7 +34,7 @@ namespace QuickSurvey.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sessions", "quicksurvey");
+                    b.ToTable("Sessions");
                 });
 
             modelBuilder.Entity("QuickSurvey.Core.SessionAggregate.Session", b =>
