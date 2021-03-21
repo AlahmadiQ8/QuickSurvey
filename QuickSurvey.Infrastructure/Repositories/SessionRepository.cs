@@ -7,7 +7,7 @@ using QuickSurvey.Core.SessionAggregate;
 
 namespace QuickSurvey.Infrastructure.Repositories
 {
-    public class SessionRepository : ISessionRepository
+    public class SessionRepository : ISessionRepository, IDisposable
     {
         private readonly SurveyContext _context;
 
@@ -36,6 +36,11 @@ namespace QuickSurvey.Infrastructure.Repositories
             }
 
             return session;
+        }
+
+        public void Dispose()
+        {
+            _context.Dispose();
         }
     }
 }

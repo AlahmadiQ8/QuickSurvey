@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using QuickSurvey.Core.SessionAggregate;
@@ -35,7 +36,7 @@ namespace QuickSurvey.Infrastructure.EntityConfigurations
                         .HasField("_voters")
                         .HasConversion(
                             l => string.Join(",", l),
-                            s => s.Split(",", StringSplitOptions.None));
+                            s => s.Split(",", StringSplitOptions.None).ToList());
                     c.WithOwner().HasForeignKey(c => c.SessionId);
                     c.HasIndex(p => new { p.Text, SessiontId = p.SessionId }).IsUnique();
                 }
