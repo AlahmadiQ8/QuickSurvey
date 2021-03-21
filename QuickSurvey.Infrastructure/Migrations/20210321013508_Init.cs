@@ -9,38 +9,41 @@ namespace QuickSurvey.Infrastructure.Migrations
             migrationBuilder.EnsureSchema(
                 name: "quicksurvey");
 
+            migrationBuilder.CreateSequence(
+                name: "sessionseq",
+                incrementBy: 10);
+
             migrationBuilder.CreateTable(
-                name: "sessions",
+                name: "Sessions",
                 schema: "quicksurvey",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_sessions", x => x.Id);
+                    table.PrimaryKey("PK_Sessions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Choices",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Text = table.Column<string>(type: "TEXT", nullable: true),
-                    Voters = table.Column<string>(type: "TEXT", nullable: true),
-                    SessionId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Text = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Voters = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SessionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Choices", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Choices_sessions_SessionId",
+                        name: "FK_Choices_Sessions_SessionId",
                         column: x => x.SessionId,
                         principalSchema: "quicksurvey",
-                        principalTable: "sessions",
+                        principalTable: "Sessions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -49,19 +52,19 @@ namespace QuickSurvey.Infrastructure.Migrations
                 name: "Participants",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Username = table.Column<string>(type: "TEXT", nullable: true),
-                    SessionId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Username = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    SessionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Participants", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Participants_sessions_SessionId",
+                        name: "FK_Participants_Sessions_SessionId",
                         column: x => x.SessionId,
                         principalSchema: "quicksurvey",
-                        principalTable: "sessions",
+                        principalTable: "Sessions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -75,7 +78,8 @@ namespace QuickSurvey.Infrastructure.Migrations
                 name: "IX_Choices_Text_SessionId",
                 table: "Choices",
                 columns: new[] { "Text", "SessionId" },
-                unique: true);
+                unique: true,
+                filter: "[Text] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Participants_SessionId",
@@ -86,7 +90,8 @@ namespace QuickSurvey.Infrastructure.Migrations
                 name: "IX_Participants_Username_SessionId",
                 table: "Participants",
                 columns: new[] { "Username", "SessionId" },
-                unique: true);
+                unique: true,
+                filter: "[Username] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -98,8 +103,11 @@ namespace QuickSurvey.Infrastructure.Migrations
                 name: "Participants");
 
             migrationBuilder.DropTable(
-                name: "sessions",
+                name: "Sessions",
                 schema: "quicksurvey");
+
+            migrationBuilder.DropSequence(
+                name: "sessionseq");
         }
     }
 }

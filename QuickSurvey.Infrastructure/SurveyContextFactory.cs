@@ -13,7 +13,7 @@ namespace QuickSurvey.Infrastructure
         public SurveyContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<SurveyContext>()
-                .UseSqlite(@"Data Source=C:\Users\mmoha\Documents\survey.db");
+                .UseSqlServer(SurveyContext.ConnectionString);
             return new SurveyContext(optionsBuilder.Options);
         }
     }

@@ -9,12 +9,12 @@ namespace QuickSurvey.Infrastructure.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Session> builder)
         {
-            builder.ToTable("sessions", SurveyContext.DefaultSchema);
+            builder.ToTable("Sessions", SurveyContext.DefaultSchema);
 
             builder.HasKey(p => p.Id);
 
             // https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/infrastructure-persistence-layer-implementation-entity-framework-core#the-hilo-algorithm-in-ef-core
-            //builder.Property(p => p.Id).UseHiLo("sessionseq");
+            builder.Property(p => p.Id).UseHiLo("sessionseq");
 
             builder.OwnsMany(
                 s => s.Participants,
