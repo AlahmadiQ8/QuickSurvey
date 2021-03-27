@@ -8,26 +8,26 @@ namespace QuickSurvey.ConsoleApp
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
-            var context = CreateDbContext();
-            context.Database.EnsureDeleted();
-            context.Database.Migrate();
-            var repository = new SessionRepository(context);
+            //var context = CreateDbContext();
+            //context.Database.EnsureDeleted();
+            //context.Database.Migrate();
+            //var repository = new SessionRepository(context);
 
-            var session = new Session("Friday Night Plans");
-            session.AddChoices(new []{"Chelsea", "HK", "Bushwick"});
-            session.AddParticipant("Mohammad");
-            session.AddParticipant("Mark");
-            session.AddParticipant("Will");
-            repository.Add(session);
-            await repository.UnitOfWork.SaveChangesAsync();
+            //var session = new Session("Friday Night Plans");
+            //session.AddChoices(new []{"Chelsea", "HK", "Bushwick"});
+            //session.AddParticipant("Mohammad");
+            //session.AddParticipant("Mark");
+            //session.AddParticipant("Will");
+            //repository.Add(session);
+            //await repository.UnitOfWork.SaveChangesAsync();
         }
 
         public static SurveyContext CreateDbContext()
         {
             var optionsBuilder = new DbContextOptionsBuilder<SurveyContext>()
-                .UseSqlite(@"Data Source=C:\Users\mmoha\Documents\survey.db");
+                .UseSqlServer(SurveyContext.ConnectionString);
             var context = new SurveyContext(optionsBuilder.Options);
             return context;
         }

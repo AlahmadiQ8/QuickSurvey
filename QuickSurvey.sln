@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickSurvey.Core", "QuickSu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickSurvey.Infrastructure", "QuickSurvey.Infrastructure\QuickSurvey.Infrastructure.csproj", "{ED2D4260-4E9F-4EC5-BA09-0695884AD441}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickSurvey.Tests", "QuickSurvey.Tests\QuickSurvey.Tests.csproj", "{F52BA762-77D0-4CBF-92BD-0173FEB63E42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickSurvey.Tests", "QuickSurvey.Tests\QuickSurvey.Tests.csproj", "{F52BA762-77D0-4CBF-92BD-0173FEB63E42}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickSurvey.Web", "QuickSurvey.Web\QuickSurvey.Web.csproj", "{4EF96670-CABC-4E1D-8666-8F8614A39754}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{F52BA762-77D0-4CBF-92BD-0173FEB63E42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F52BA762-77D0-4CBF-92BD-0173FEB63E42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F52BA762-77D0-4CBF-92BD-0173FEB63E42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EF96670-CABC-4E1D-8666-8F8614A39754}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EF96670-CABC-4E1D-8666-8F8614A39754}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EF96670-CABC-4E1D-8666-8F8614A39754}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EF96670-CABC-4E1D-8666-8F8614A39754}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
