@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +21,8 @@ namespace QuickSurvey.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddRazorPages();
+            services.AddHealthChecks();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -49,23 +52,44 @@ namespace QuickSurvey.Web
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapRazorPages();
                 endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                    "default",
+                    "{controller}/{action=Index}/{id?}");
+                endpoints.MapHealthChecks("/health");
             });
 
-            app.UseSpa(spa =>
+            app.MapWhen(IsWebpackServer, webpackDevServer => {
+                webpackDevServer.UseSpa(spa => {
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                });
+            });
+
+            if (env.IsDevelopment())
             {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
-
-                spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment())
+                app.UseSpa(spa =>
                 {
-                    spa.UseAngularCliServer(npmScript: "start");
-                }
+                    if (env.IsDevelopment())
+                    {
+                        spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                    }
+                });
+            }
+
+            app.Map(new PathString("/app"), appMember =>
+            {
+                appMember.UseSpa(spa =>
+                {
+                    spa.Options.SourcePath = "ClientApp";
+                });
             });
+        }
+
+        private static bool IsWebpackServer(HttpContext context)
+        {
+            return context.Request.Path.StartsWithSegments("/webpack-dev-server") ||
+                   context.Request.Path.StartsWithSegments("/__webpack_dev_server__") ||
+                   context.Request.Path.StartsWithSegments("/sockjs-node");
         }
     }
 }

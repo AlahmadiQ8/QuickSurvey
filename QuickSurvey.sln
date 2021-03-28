@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickSurvey.Infrastructure"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickSurvey.Tests", "QuickSurvey.Tests\QuickSurvey.Tests.csproj", "{F52BA762-77D0-4CBF-92BD-0173FEB63E42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickSurvey.Web", "QuickSurvey.Web\QuickSurvey.Web.csproj", "{4EF96670-CABC-4E1D-8666-8F8614A39754}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickSurvey.Web", "QuickSurvey.Web\QuickSurvey.Web.csproj", "{4EF96670-CABC-4E1D-8666-8F8614A39754}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
