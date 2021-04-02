@@ -43,6 +43,7 @@
         ]
       }
     ],
+    "member-access":[ true, "check-parameter-property"],
     "no-console": [
       true,
       "debug",

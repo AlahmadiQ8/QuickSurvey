@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using QuickSurvey.Web.Hubs;
 
 namespace QuickSurvey.Web
 {
@@ -28,6 +29,7 @@ namespace QuickSurvey.Web
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +59,7 @@ namespace QuickSurvey.Web
                     "default",
                     "{controller}/{action=Index}/{id?}");
                 endpoints.MapHealthChecks("/health");
+                endpoints.MapHub<MessageHub>("/hub");
             });
 
             app.MapWhen(IsWebpackServer, webpackDevServer => {
