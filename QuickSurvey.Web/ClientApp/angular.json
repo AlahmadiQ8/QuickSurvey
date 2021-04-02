@@ -3,13 +3,13 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "survey-session": {
+    "ClientApp": {
       "projectType": "application",
       "schematics": {
-        "@schematics/angular:component": {
+        "@schematics/angular:class": {
           "skipTests": true
         },
-        "@schematics/angular:class": {
+        "@schematics/angular:component": {
           "skipTests": true
         },
         "@schematics/angular:directive": {
@@ -34,27 +34,23 @@
           "strict": true
         }
       },
-      "root": "projects/survey-session",
-      "sourceRoot": "projects/survey-session/src",
+      "root": "",
+      "sourceRoot": "src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "baseHref": "/app",
-            "deployUrl": "/survey-session/",
-            "outputPath": "dist/survey-session",
-            "index": "projects/survey-session/src/index.html",
-            "main": "projects/survey-session/src/main.ts",
-            "polyfills": "projects/survey-session/src/polyfills.ts",
-            "tsConfig": "projects/survey-session/tsconfig.app.json",
+            "outputPath": "dist",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.app.json",
             "aot": true,
-            "assets": [
-              "projects/survey-session/src/favicon.ico",
-              "projects/survey-session/src/assets"
-            ],
+            "assets": ["src/assets"],
             "styles": [
-              "projects/survey-session/src/styles.css"
+              "src/styles.css"
             ],
             "scripts": []
           },
@@ -62,8 +58,8 @@
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "projects/survey-session/src/environments/environment.ts",
-                  "with": "projects/survey-session/src/environments/environment.prod.ts"
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -91,128 +87,33 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "survey-session:build",
-            "deployUrl": "/"
+            "browserTarget": "ClientApp:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "survey-session:build:production"
+              "browserTarget": "ClientApp:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "survey-session:build"
+            "browserTarget": "ClientApp:build"
           }
-        }
-      }
-    },
-    "create-session": {
-      "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "skipTests": true
         },
-        "@schematics/angular:class": {
-          "skipTests": true
-        },
-        "@schematics/angular:directive": {
-          "skipTests": true
-        },
-        "@schematics/angular:guard": {
-          "skipTests": true
-        },
-        "@schematics/angular:interceptor": {
-          "skipTests": true
-        },
-        "@schematics/angular:module": {
-          "skipTests": true
-        },
-        "@schematics/angular:pipe": {
-          "skipTests": true
-        },
-        "@schematics/angular:service": {
-          "skipTests": true
-        },
-        "@schematics/angular:application": {
-          "strict": true
-        }
-      },
-      "root": "projects/create-session",
-      "sourceRoot": "projects/create-session/src",
-      "prefix": "app",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "baseHref": "/new",
-            "deployUrl": "/create-session/",
-            "outputPath": "dist/create-session",
-            "index": "projects/create-session/src/index.html",
-            "main": "projects/create-session/src/main.ts",
-            "polyfills": "projects/create-session/src/polyfills.ts",
-            "tsConfig": "projects/create-session/tsconfig.app.json",
-            "aot": true,
-            "assets": [
-              "projects/create-session/src/favicon.ico",
-              "projects/create-session/src/assets"
+            "tsConfig": [
+              "tsconfig.app.json"
             ],
-            "styles": [
-              "projects/create-session/src/styles.css"
-            ],
-            "scripts": []
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "projects/create-session/src/environments/environment.ts",
-                  "with": "projects/create-session/src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "300kb",
-                  "maximumError": "500kb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "create-session:build",
-            "deployUrl": "/"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "create-session:build:production"
-            }
-          }
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "create-session:build"
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         }
       }
     }
   },
-  "defaultProject": "survey-session"
+  "defaultProject": "ClientApp"
 }
