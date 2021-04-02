@@ -4,9 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --prod",
-    "lint": "ng lint",
-    "e2e": "ng e2e"
+    "start-app": "ng serve survey-session",
+    "start-new": "ng serve create-session",
+    "build": "ng build survey-session --prod && ng build create-session --prod",
+    "lint": "ng lint"
   },
   "private": true,
   "dependencies": {

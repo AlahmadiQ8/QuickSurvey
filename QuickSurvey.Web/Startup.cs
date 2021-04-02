@@ -1,9 +1,11 @@
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using QuickSurvey.Web.Hubs;
 
@@ -83,6 +85,26 @@ namespace QuickSurvey.Web
             {
                 appMember.UseSpa(spa =>
                 {
+                    //spa.Options.
+                    spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions
+                    {
+                        FileProvider = new PhysicalFileProvider(
+                            Path.Combine(env.ContentRootPath, "ClientApp", "dist", "survey-session")),
+                    };
+                    spa.Options.SourcePath = "ClientApp";
+                });
+            });
+
+            app.Map(new PathString("/new"), appMember =>
+            {
+                appMember.UseSpa(spa =>
+                {
+                    //spa.Options.
+                    spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions
+                    {
+                        FileProvider = new PhysicalFileProvider(
+                            Path.Combine(env.ContentRootPath, "ClientApp", "dist", "create-session")),
+                    };
                     spa.Options.SourcePath = "ClientApp";
                 });
             });
