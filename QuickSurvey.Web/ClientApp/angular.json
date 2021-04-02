@@ -196,7 +196,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "create-session:build"
+            "browserTarget": "create-session:build",
+            "deployUrl": "/"
           },
           "configurations": {
             "production": {
