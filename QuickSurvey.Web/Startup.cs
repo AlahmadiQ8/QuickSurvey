@@ -1,24 +1,32 @@
+using System;
 using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using QuickSurvey.Core.SessionAggregate;
+using QuickSurvey.Infrastructure;
+using QuickSurvey.Infrastructure.Repositories;
 using QuickSurvey.Web.Hubs;
 
 namespace QuickSurvey.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            _env = env;
         }
 
         public IConfiguration Configuration { get; }
+        private readonly IWebHostEnvironment _env;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -32,12 +40,23 @@ namespace QuickSurvey.Web
                 configuration.RootPath = "ClientApp/dist";
             });
             services.AddSignalR();
+
+            services.AddDbContextPool<SurveyContext>(options =>
+            {
+                options.UseSqlServer(SurveyContext.ConnectionString);
+                if (_env.IsDevelopment())
+                {
+                    options.LogTo(Console.WriteLine, LogLevel.Information);
+                    options.EnableSensitiveDataLogging();
+                }
+            });
+            services.AddScoped<ISessionRepository, SessionRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
+            if (_env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -47,7 +66,7 @@ namespace QuickSurvey.Web
             }
 
             app.UseStaticFiles();
-            if (!env.IsDevelopment())
+            if (!_env.IsDevelopment())
             {
                 app.UseSpaStaticFiles();
             }
@@ -70,11 +89,11 @@ namespace QuickSurvey.Web
                 });
             });
 
-            if (env.IsDevelopment())
+            if (_env.IsDevelopment())
             {
                 app.UseSpa(spa =>
                 {
-                    if (env.IsDevelopment())
+                    if (_env.IsDevelopment())
                     {
                         spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
                     }
@@ -89,7 +108,7 @@ namespace QuickSurvey.Web
                     spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions
                     {
                         FileProvider = new PhysicalFileProvider(
-                            Path.Combine(env.ContentRootPath, "ClientApp", "dist", "survey-session")),
+                            Path.Combine(_env.ContentRootPath, "ClientApp", "dist", "survey-session")),
                     };
                     spa.Options.SourcePath = "ClientApp";
                 });
@@ -103,7 +122,7 @@ namespace QuickSurvey.Web
                     spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions
                     {
                         FileProvider = new PhysicalFileProvider(
-                            Path.Combine(env.ContentRootPath, "ClientApp", "dist", "create-session")),
+                            Path.Combine(_env.ContentRootPath, "ClientApp", "dist", "create-session")),
                     };
                     spa.Options.SourcePath = "ClientApp";
                 });

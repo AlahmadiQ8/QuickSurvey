@@ -13,7 +13,7 @@ namespace QuickSurvey.Core.SessionAggregate
         public IReadOnlyCollection<Participant> Participants => _participants;
         public IReadOnlyCollection<Choice> Choices => _choices;
 
-        private static int MaxNumberOfChoices = 6;
+        public static int MaxNumberOfChoices = 6;
 
         private readonly List<Participant> _participants;
         private readonly List<Choice> _choices;
@@ -45,14 +45,14 @@ namespace QuickSurvey.Core.SessionAggregate
             _participants.Add(participant);
         }
 
-        public void AddChoices(string[] choiceTexts)
+        public void AddChoices(IList<string> choiceTexts)
         {
-            if (choiceTexts.Length > MaxNumberOfChoices)
+            if (choiceTexts.Count > MaxNumberOfChoices)
             {
                 throw new SessionExceptions($"Choices cannot exceed a maximum of {MaxNumberOfChoices}");
             }
 
-            if (choiceTexts.Distinct().Count() != choiceTexts.Length)
+            if (choiceTexts.Distinct().Count() != choiceTexts.Count)
             {
                 throw new SessionExceptions("Choices cannot have duplicates");
             }

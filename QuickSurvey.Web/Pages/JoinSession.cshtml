@@ -1,0 +1,13 @@
+﻿@page "/JoinSession/{id:int}"
+@model QuickSurvey.Web.Pages.JoinSessionModel
+@{
+}
+
+<h1>Join Live Poll for: @Model.SessionTitle</h1>
+
+<form method="post">
+    <input type="hidden" asp-for="Id" />
+    <input type="text" asp-for="ParticipantUserName"/>
+    <input type="submit" value="Join Session"/>
+    <span asp-validation-for="ParticipantUserName"></span>
+</form>

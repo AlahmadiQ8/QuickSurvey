@@ -1,74 +1,51 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import * as signalR from '@microsoft/signalr';
+import { Component, OnChanges, SimpleChanges } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, ValidatorFn, Validators } from '@angular/forms';
+
+const defaultValidation = ['', Validators.compose([Validators.required, Validators.minLength(5), Validators.maxLength(250)])]
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
 })
-export class AppComponent implements OnInit {
-  public message = new FormControl('');
-  public messages: { username: string, message: string }[] = [];
+export class AppComponent {
+  public static MAX_CHOICE = 6;
+
+  public surveySessionForm = this.fb.group({
+    title: defaultValidation,
+    choices: this.fb.array([defaultValidation, defaultValidation])
+  })
+
   public error = '';
-  public status = 'Connecting';
-  public username = new Date().toISOString();
 
-  private connection = new signalR.HubConnectionBuilder()
-    .withUrl('/hub')
-    .withAutomaticReconnect()
-    .build();
+  get title(): FormControl { return this.surveySessionForm.get('title') as FormControl }
+  get choices(): FormArray { return this.surveySessionForm.get('choices') as FormArray; }
+  get maxChoice(): number { return AppComponent.MAX_CHOICE; }
 
-  public ngOnInit(): void {
-    this.connection.onreconnecting(error => {
-      console.assert(this.connection.state === signalR.HubConnectionState.Reconnecting);
-      this.error = `Connection lost due to error "${error}". Reconnecting.`;
-    });
-
-    this.connection.onreconnected(connectionId => {
-      console.assert(this.connection.state === signalR.HubConnectionState.Connected);
-      this.status = `Connection reestablished. Connected with connectionId "${connectionId}".`;
-    });
-
-    this.connection.on('messageReceived', (username: string, message: string) => {
-      this.messages.push({ username, message });
-    });
-
-    this.connection.onclose(error => {
-        console.assert(this.connection.state === signalR.HubConnectionState.Disconnected);
-
-        this.error = `Connection closed due to error "${error}". Try refreshing this page to restart the connection.`;
-        this.status = '';
-    });
-
-    this.connection.start().catch(err => {
-      this.error = err;
-    });
+  get hasChoicesErrors(): boolean {
+    return this.choices.controls.some(f => f.errors);
   }
 
-  public async start(): Promise<void> {
-    try {
-      await this.connection.start();
-      console.assert(this.connection.state === signalR.HubConnectionState.Connected);
-      this.status = 'SignalR Connected';
-    } catch (err) {
-      console.assert(this.connection.state === signalR.HubConnectionState.Disconnected);
-      console.log(err);
-      setTimeout(() => this.start(), 5000);
+  constructor(private fb: FormBuilder) {
+    this.choices.errors
+  }
+
+  public addChoice() {
+    this.choices.push(this.fb.control(defaultValidation[0], defaultValidation[1] as ValidatorFn));
+    console.log(this.choices.errors);
+    this.title.errors
+  }
+
+  public removeChoice(): void {
+    this.choices.removeAt(-1);
+  }
+
+  public onSubmit(): void {
+    if (!this.surveySessionForm.valid) {
+      this.error = "Unexpected validation error";
+      return;
     }
-  }
-
-  public onEnter(e: Event): void {
-    console.log('received keyboard input');
-    this.send(this.message.value);
-    this.message.setValue('');
-  }
-
-  private send(message: string): void {
-    this.connection
-      .send('newMessage', this.username, message)
-      .catch(err => {
-        console.log('error sending message');
-        console.log(err);
-      });
+    const body = this.surveySessionForm.value as {title: string, choices: string[]};
+    console.log(JSON.stringify(body, null, 2));
   }
 }
+
