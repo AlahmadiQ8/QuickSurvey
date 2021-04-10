@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {Location} from '@angular/common';
 import { FormControl } from '@angular/forms';
 import * as signalR from '@microsoft/signalr';
 
@@ -18,7 +19,17 @@ export class AppComponent implements OnInit {
     .withAutomaticReconnect()
     .build();
 
+    constructor(private location: Location) {
+    }
+
   public ngOnInit(): void {
+
+    // Example: /{sessionId}/participant/{username} => ["", sessionId, "participant", username]
+    var path = this.location.path().split("/");
+    var sessionId = path[1];
+    var username = path[3];
+    console.log(`sessionId = ${sessionId}, username = ${username}`)
+
     this.connection.onreconnecting(error => {
       console.assert(this.connection.state === signalR.HubConnectionState.Reconnecting);
       this.error = `Connection lost due to error "${error}". Reconnecting.`;
@@ -71,4 +82,8 @@ export class AppComponent implements OnInit {
         console.log(err);
       });
   }
+
+  // private static IsValidPath(): boolean {
+
+  // }
 }
