@@ -100,30 +100,10 @@ namespace QuickSurvey.Web
                 });
             }
 
-            app.Map(new PathString("/app"), appMember =>
+            app.Map(new PathString("/App"), appMember =>
             {
                 appMember.UseSpa(spa =>
                 {
-                    //spa.Options.
-                    spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions
-                    {
-                        FileProvider = new PhysicalFileProvider(
-                            Path.Combine(_env.ContentRootPath, "ClientApp", "dist", "survey-session")),
-                    };
-                    spa.Options.SourcePath = "ClientApp";
-                });
-            });
-
-            app.Map(new PathString("/new"), appMember =>
-            {
-                appMember.UseSpa(spa =>
-                {
-                    //spa.Options.
-                    spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions
-                    {
-                        FileProvider = new PhysicalFileProvider(
-                            Path.Combine(_env.ContentRootPath, "ClientApp", "dist", "create-session")),
-                    };
                     spa.Options.SourcePath = "ClientApp";
                 });
             });

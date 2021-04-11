@@ -4,10 +4,10 @@ import { FormArray, FormBuilder, FormControl, ValidatorFn, Validators } from '@a
 const defaultValidation = ['', Validators.compose([Validators.required, Validators.minLength(5), Validators.maxLength(250)])]
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
+  selector: 'app-create-session',
+  templateUrl: './create-session.component.html',
 })
-export class AppComponent {
+export class CreateSessionComponent {
   public static MAX_CHOICE = 6;
 
   public surveySessionForm = this.fb.group({
@@ -19,7 +19,7 @@ export class AppComponent {
 
   get title(): FormControl { return this.surveySessionForm.get('title') as FormControl }
   get choices(): FormArray { return this.surveySessionForm.get('choices') as FormArray; }
-  get maxChoice(): number { return AppComponent.MAX_CHOICE; }
+  get maxChoice(): number { return CreateSessionComponent.MAX_CHOICE; }
 
   get hasChoicesErrors(): boolean {
     return this.choices.controls.some(f => f.errors);

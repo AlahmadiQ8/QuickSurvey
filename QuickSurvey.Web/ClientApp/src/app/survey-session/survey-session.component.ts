@@ -1,34 +1,34 @@
 import { Component, OnInit } from '@angular/core';
-import {Location} from '@angular/common';
 import { FormControl } from '@angular/forms';
 import * as signalR from '@microsoft/signalr';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
+  selector: 'app-survey-session',
+  templateUrl: './survey-session.component.html',
 })
-export class AppComponent implements OnInit {
+export class SurveySessionComponent implements OnInit {
   public message = new FormControl('');
   public messages: { username: string, message: string }[] = [];
   public error = '';
   public status = 'Connecting';
-  public username = new Date().toISOString();
+  public faekUsername = new Date().toISOString();
+  public id: number = -1;
+  public username: string = '';
 
   private connection = new signalR.HubConnectionBuilder()
     .withUrl('/hub')
     .withAutomaticReconnect()
     .build();
 
-    constructor(private location: Location) {
+    constructor(private route: ActivatedRoute) {
     }
 
   public ngOnInit(): void {
 
-    // Example: /{sessionId}/participant/{username} => ["", sessionId, "participant", username]
-    var path = this.location.path().split("/");
-    var sessionId = path[1];
-    var username = path[3];
-    console.log(`sessionId = ${sessionId}, username = ${username}`)
+    console.log(this.route.snapshot.paramMap);
+    this.id = parseInt(this.route.snapshot.paramMap.get('id') ?? '', 10);
+    this.username = this.route.snapshot.paramMap.get('username') ?? '';
 
     this.connection.onreconnecting(error => {
       console.assert(this.connection.state === signalR.HubConnectionState.Reconnecting);
@@ -76,14 +76,10 @@ export class AppComponent implements OnInit {
 
   private send(message: string): void {
     this.connection
-      .send('newMessage', this.username, message)
+      .send('newMessage', this.faekUsername, message)
       .catch(err => {
         console.log('error sending message');
         console.log(err);
       });
   }
-
-  // private static IsValidPath(): boolean {
-
-  // }
 }
