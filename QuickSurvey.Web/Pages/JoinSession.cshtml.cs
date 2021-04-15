@@ -4,9 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using QuickSurvey.Core.Exceptions;
 using QuickSurvey.Core.SessionAggregate;
 
 namespace QuickSurvey.Web.Pages
@@ -53,12 +55,22 @@ namespace QuickSurvey.Web.Pages
                 return Page();
 
             var session = await _repository.GetAsync(Id);
-            session.AddParticipant(ParticipantUserName);
+            try
+            {
+                session.AddParticipant(ParticipantUserName);
+            }
+            catch (SessionExceptions e)
+            {
+                Console.WriteLine(e);
+                ModelState.AddModelError(nameof(ParticipantUserName), e.Message);
+                return Page();
+            }
+
             await _repository.UnitOfWork.SaveEntitiesAsync();
 
             _logger.LogDebug($"Participant {ParticipantUserName}` is joining session id {Id}");
 
-            return Redirect($"/app/{Id}/participant/{ParticipantUserName}");
+            return Redirect($"/App/PollSession/{Id}/Username/{ParticipantUserName}");
         }
     }
 }
