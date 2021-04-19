@@ -61,7 +61,6 @@ namespace QuickSurvey.Web.Pages
             }
             catch (SessionExceptions e)
             {
-                Console.WriteLine(e);
                 ModelState.AddModelError(nameof(ParticipantUserName), e.Message);
                 return Page();
             }

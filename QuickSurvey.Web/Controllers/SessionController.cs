@@ -2,9 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
 using QuickSurvey.Core.SessionAggregate;
+using QuickSurvey.Web.Authentication;
 using QuickSurvey.Web.Controllers.Requests;
 using QuickSurvey.Web.Extensions;
 
@@ -16,27 +20,34 @@ namespace QuickSurvey.Web.Controllers
     [ApiController]
     public class SessionController : ControllerBase
     {
+        private readonly ILogger<SessionController> _logger;
         private readonly ISessionRepository _repository;
         private readonly LinkGenerator _linkGenerator;
 
-        public SessionController(ISessionRepository repository, LinkGenerator linkGenerator)
+        public const string SessionIdRouteParameterName = "sessionId";
+        public const string UsernameRouteParameterName = "username";
+
+        public SessionController(ISessionRepository repository, LinkGenerator linkGenerator, ILogger<SessionController> logger)
         {
             _repository = repository;
             _linkGenerator = linkGenerator;
-        }
-
-        // GET: api/<SessionController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
+            _logger = logger;
         }
 
         // GET api/<SessionController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{" + SessionIdRouteParameterName + ":int}/Participant/{" + UsernameRouteParameterName + "}")]
+        [Authorize]
+        public async Task<IActionResult> Get([FromRoute] int sessionId)
         {
-            return "value";
+            
+            var session = await _repository.GetAsync(sessionId);
+            var user = (ClaimsIdentity) User.Identity;
+            _logger.LogInformation(user.Name);
+            _logger.LogInformation(user.FindFirst("SessionId").Value);
+
+            if (session == null)
+                return NotFound();
+            return Ok(session);
         }
 
         // POST api/<SessionController>

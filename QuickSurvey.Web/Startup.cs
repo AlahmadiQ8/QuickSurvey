@@ -1,18 +1,17 @@
 using System;
-using System.IO;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using QuickSurvey.Core.SessionAggregate;
 using QuickSurvey.Infrastructure;
 using QuickSurvey.Infrastructure.Repositories;
+using QuickSurvey.Web.Authentication;
 using QuickSurvey.Web.Hubs;
 
 namespace QuickSurvey.Web
@@ -39,6 +38,12 @@ namespace QuickSurvey.Web
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            services.AddHttpContextAccessor();
+
+            services.AddAuthentication("BasicAuthentication")
+                .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+
             services.AddSignalR();
 
             services.AddDbContextPool<SurveyContext>(options =>
@@ -72,6 +77,8 @@ namespace QuickSurvey.Web
             }
 
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
