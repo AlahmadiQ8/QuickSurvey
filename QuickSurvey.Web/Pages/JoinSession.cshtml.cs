@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using QuickSurvey.Core.Exceptions;
 using QuickSurvey.Core.SessionAggregate;
+using QuickSurvey.Web.Authentication;
 
 namespace QuickSurvey.Web.Pages
 {
@@ -17,6 +18,7 @@ namespace QuickSurvey.Web.Pages
     {
         private ILogger<JoinSessionModel> _logger;
         private readonly ISessionRepository _repository;
+        private readonly BasicObfuscator _obfuscator;
 
         public string SessionTitle { get; set; }
         
@@ -30,10 +32,11 @@ namespace QuickSurvey.Web.Pages
         [RegularExpression("[\\w-]+")]
         public string ParticipantUserName { get; set; }
 
-        public JoinSessionModel(ISessionRepository repository, ILogger<JoinSessionModel> logger)
+        public JoinSessionModel(ISessionRepository repository, ILogger<JoinSessionModel> logger, BasicObfuscator obfuscator)
         {
             _repository = repository;
             _logger = logger;
+            _obfuscator = obfuscator;
         }
 
         public async Task<IActionResult> OnGetAsync(int id)
@@ -68,8 +71,8 @@ namespace QuickSurvey.Web.Pages
             await _repository.UnitOfWork.SaveEntitiesAsync();
 
             _logger.LogDebug($"Participant {ParticipantUserName}` is joining session id {Id}");
-
-            return Redirect($"/App/PollSession/{Id}/Username/{ParticipantUserName}");
+            
+            return Redirect($"/App/PollSession/{Id}/Username/{ParticipantUserName}?access_token={_obfuscator.Obfuscate(Id, ParticipantUserName)}");
         }
     }
 }

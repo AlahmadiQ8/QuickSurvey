@@ -34,7 +34,7 @@ namespace QuickSurvey.Infrastructure.EntityConfigurations
                         .HasField("_voters")
                         .HasConversion(
                             l => string.Join(",", l),
-                            s => s.Split(",", StringSplitOptions.None).ToList());
+                            s => s.Split(",", StringSplitOptions.RemoveEmptyEntries).ToList());
                     c.WithOwner().HasForeignKey(c => c.SessionId);
                     c.HasIndex(p => new { p.Text, SessiontId = p.SessionId }).IsUnique();
                 }

@@ -1,8 +1,10 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +14,8 @@ using QuickSurvey.Core.SessionAggregate;
 using QuickSurvey.Infrastructure;
 using QuickSurvey.Infrastructure.Repositories;
 using QuickSurvey.Web.Authentication;
-using QuickSurvey.Web.Hubs;
+using QuickSurvey.Web.SignalRCore;
+using QuickSurvey.Web.SignalRCore.Hubs;
 
 namespace QuickSurvey.Web
 {
@@ -44,6 +47,7 @@ namespace QuickSurvey.Web
             services.AddAuthentication("BasicAuthentication")
                 .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
+
             services.AddSignalR();
 
             services.AddDbContextPool<SurveyContext>(options =>
@@ -56,6 +60,8 @@ namespace QuickSurvey.Web
                 }
             });
             services.AddScoped<ISessionRepository, SessionRepository>();
+            services.AddSingleton<BasicObfuscator>();
+            services.AddSingleton<IUserConnectionRepository, InMemoryUserConnectionRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

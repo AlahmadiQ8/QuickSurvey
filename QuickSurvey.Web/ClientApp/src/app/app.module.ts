@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { CreateSessionComponent } from './create-session/create-session.component';
 import { SurveySessionComponent } from './survey-session/survey-session.component';
+import { WINDOW } from './injection-tokens';
 
 @NgModule({
   declarations: [
@@ -20,13 +21,14 @@ import { SurveySessionComponent } from './survey-session/survey-session.componen
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    HttpClientModule,
     RouterModule.forRoot([
       { path: 'PollSession/:id/Username/:username', component: SurveySessionComponent, pathMatch: 'full' },
       { path: 'NewPoll', component: CreateSessionComponent},
       { path: '**', redirectTo: 'NewPoll' }
     ])
   ],
-  providers: [],
+  providers: [ {provide: WINDOW, useValue: window}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

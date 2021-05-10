@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Runtime.InteropServices;
+using System.Text;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
+using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
-using QuickSurvey.Core.SessionAggregate;
 using QuickSurvey.Infrastructure;
-using QuickSurvey.Infrastructure.Repositories;
 
 namespace QuickSurvey.ConsoleApp
 {
@@ -10,26 +12,24 @@ namespace QuickSurvey.ConsoleApp
     {
         static void Main(string[] args)
         {
-            //var context = CreateDbContext();
-            //context.Database.EnsureDeleted();
-            //context.Database.Migrate();
-            //var repository = new SessionRepository(context);
+            //var str = "Mohammad";
 
-            //var session = new Session("Friday Night Plans");
-            //session.AddChoices(new []{"Chelsea", "HK", "Bushwick"});
-            //session.AddParticipant("Mohammad");
-            //session.AddParticipant("Mark");
-            //session.AddParticipant("Will");
-            //repository.Add(session);
-            //await repository.UnitOfWork.SaveChangesAsync();
-        }
+            //var obfuscated = Caesar(str, 42);
+            //var obfyscatedEncoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(str));
 
-        public static SurveyContext CreateDbContext()
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<SurveyContext>()
-                .UseSqlServer(SurveyContext.ConnectionString);
-            var context = new SurveyContext(optionsBuilder.Options);
-            return context;
+            //var decodewdBytes = Convert.FromBase64String(obfyscatedEncoded);
+            //var decoded = Encoding.UTF8.GetString(decodewdBytes);
+
+            //var result = Caesar(decoded, -42);
+
+            //Console.WriteLine("Original:      " + str);
+            //Console.WriteLine("obfyscatedEncoded:    " + obfyscatedEncoded);
+            //Console.WriteLine("DeObfuscated:  " + result);
+            //Console.WriteLine("DeObfuscated Decoded:  " + decoded);
+            
+
+
+
         }
     }
 }

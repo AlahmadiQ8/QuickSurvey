@@ -24,9 +24,6 @@ namespace QuickSurvey.Web.Controllers
         private readonly ISessionRepository _repository;
         private readonly LinkGenerator _linkGenerator;
 
-        public const string SessionIdRouteParameterName = "sessionId";
-        public const string UsernameRouteParameterName = "username";
-
         public SessionController(ISessionRepository repository, LinkGenerator linkGenerator, ILogger<SessionController> logger)
         {
             _repository = repository;
@@ -35,7 +32,7 @@ namespace QuickSurvey.Web.Controllers
         }
 
         // GET api/<SessionController>/5
-        [HttpGet("{" + SessionIdRouteParameterName + ":int}/Participant/{" + UsernameRouteParameterName + "}")]
+        [HttpGet("{sessionId:int}/user/{username}")]
         [Authorize]
         public async Task<IActionResult> Get([FromRoute] int sessionId)
         {
@@ -47,7 +44,7 @@ namespace QuickSurvey.Web.Controllers
 
             if (session == null)
                 return NotFound();
-            return Ok(session);
+            return Ok(session.ToSessionResponse());
         }
 
         // POST api/<SessionController>
@@ -65,16 +62,16 @@ namespace QuickSurvey.Web.Controllers
             return Created(link, request);
         }
 
-        // PUT api/<SessionController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        //// PUT api/<SessionController>/5
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody] string value)
+        //{
+        //}
 
-        // DELETE api/<SessionController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //// DELETE api/<SessionController>/5
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //}
     }
 }

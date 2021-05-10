@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using QuickSurvey.Core.Entities;
 using QuickSurvey.Core.Exceptions;
 using QuickSurvey.Core.SeedWork;
 

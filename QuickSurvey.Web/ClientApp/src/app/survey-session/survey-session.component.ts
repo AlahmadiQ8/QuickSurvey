@@ -1,85 +1,105 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import * as signalR from '@microsoft/signalr';
-import { ActivatedRoute } from '@angular/router';
+import { SignalRService } from '../services/signalr.service';
+import { AuthService, User } from '../services/auth.service';
+import { ServerMethods } from '../services/signalr.service';
+import { ApiService, Session } from '../services/api.service';
+import { combineLatest, concat, merge, Observable, ObservableInput, pipe, Subject, Subscription } from 'rxjs';
+import { concatAll, finalize, first, map, tap, last, concatMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-survey-session',
   templateUrl: './survey-session.component.html',
+  providers: [AuthService, SignalRService, ApiService]
 })
 export class SurveySessionComponent implements OnInit {
   public message = new FormControl('');
   public messages: { username: string, message: string }[] = [];
+  public state: signalR.HubConnectionState = signalR.HubConnectionState.Connecting;
   public error = '';
-  public status = 'Connecting';
-  public faekUsername = new Date().toISOString();
-  public id: number = -1;
-  public username: string = '';
+  public user: User;
+  public activeUsers: string[] = [];
+  public offlineUsers: string[] = [];
+  public session: Session | null = null;
+  public sessionSubscription: Subscription;
+  public subject = new Subject<undefined>();
 
-  private connection = new signalR.HubConnectionBuilder()
-    .withUrl('/hub')
-    .withAutomaticReconnect()
-    .build();
-
-    constructor(private route: ActivatedRoute) {
+  constructor(private signalRService: SignalRService, private authService: AuthService, private apiService: ApiService) {
+    if (this.authService.currentUser == null) {
+      throw new Error('Cannot authenticate');
     }
-
-  public ngOnInit(): void {
-
-    console.log(this.route.snapshot.paramMap);
-    this.id = parseInt(this.route.snapshot.paramMap.get('id') ?? '', 10);
-    this.username = this.route.snapshot.paramMap.get('username') ?? '';
-
-    this.connection.onreconnecting(error => {
-      console.assert(this.connection.state === signalR.HubConnectionState.Reconnecting);
-      this.error = `Connection lost due to error "${error}". Reconnecting.`;
-    });
-
-    this.connection.onreconnected(connectionId => {
-      console.assert(this.connection.state === signalR.HubConnectionState.Connected);
-      this.status = `Connection reestablished. Connected with connectionId "${connectionId}".`;
-    });
-
-    this.connection.on('messageReceived', (username: string, message: string) => {
-      this.messages.push({ username, message });
-    });
-
-    this.connection.onclose(error => {
-        console.assert(this.connection.state === signalR.HubConnectionState.Disconnected);
-
-        this.error = `Connection closed due to error "${error}". Try refreshing this page to restart the connection.`;
-        this.status = '';
-    });
-
-    this.connection.start().catch(err => {
-      this.error = err;
-    });
+    this.user = this.authService.currentUser;
+    this.sessionSubscription = this.subject.asObservable().pipe(concatMap(s => this.apiService.getSession()))
+      .subscribe(session => {
+        this.session = session;
+        this.offlineUsers = session.participants.filter(u => !this.activeUsers.includes(u))
+      });
   }
 
-  public async start(): Promise<void> {
-    try {
-      await this.connection.start();
-      console.assert(this.connection.state === signalR.HubConnectionState.Connected);
-      this.status = 'SignalR Connected';
-    } catch (err) {
-      console.assert(this.connection.state === signalR.HubConnectionState.Disconnected);
-      console.log(err);
-      setTimeout(() => this.start(), 5000);
-    }
+  public ngOnInit(): void {
+    this.setupSignalR();
+    this.subject.next();
   }
 
   public onEnter(e: Event): void {
     console.log('received keyboard input');
     this.send(this.message.value);
-    this.message.setValue('');
+    this.subject.next();
+  }
+
+  private setupSignalR(): void {
+    this.signalRService.createConnection({
+      onReconnectedHandler: (connectionId) => {
+        this.state = this.signalRService.connectionState;
+        this.error = '';
+        console.log(`Connection reestablished. Connected with connectionId "${connectionId}".`);
+        this.subject.next();
+        // this.session.
+      },
+      onCloseHandler: this.errorCallback,
+      onReconnectionErrorHandler: this.errorCallback,
+      OnReconnectingHandler: this.errorCallback
+    })
+
+    this.signalRService.OnMessageReceived('messageReceived', (username: string, message: string) => {
+      this.messages.push({ username, message });
+    });
+
+    this.signalRService.OnMessageReceived(ServerMethods.ActiveUsersUpdated, (activeUsers: string[]) => {
+      this.activeUsers = activeUsers.filter(u => this.user.username != u);
+      this.offlineUsers = this.session!.participants.filter(u => !this.activeUsers.includes(u))
+    })
+
+    this.start().catch(err => {
+      console.log('unexpected error occured')
+      this.error = err;
+    });
+  }
+
+  private async start(): Promise<void> {
+    try {
+      await this.signalRService.start()
+      console.assert(this.signalRService.connectionState === signalR.HubConnectionState.Connected);
+      this.state = this.signalRService.connectionState;
+    } catch (err) {
+      console.assert(this.signalRService.connectionState === signalR.HubConnectionState.Disconnected);
+      console.log(err);
+      this.state = this.signalRService.connectionState;
+      setTimeout(() => this.start(), 5000);
+    }
   }
 
   private send(message: string): void {
-    this.connection
-      .send('newMessage', this.faekUsername, message)
+    this.signalRService.SendMessage('newMessage', this.user.username, message)
       .catch(err => {
         console.log('error sending message');
         console.log(err);
       });
+  }
+
+  private errorCallback = (err: Error | undefined) => {
+    this.state = this.signalRService.connectionState;
+    this.error = err?.message || '';
   }
 }

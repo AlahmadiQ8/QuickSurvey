@@ -1,8 +1,6 @@
-﻿using System;
-using QuickSurvey.Core.SeedWork;
-using QuickSurvey.Core.SessionAggregate;
+﻿using QuickSurvey.Core.SeedWork;
 
-namespace QuickSurvey.Core.Entities
+namespace QuickSurvey.Core.SessionAggregate
 {
     public class Participant : Entity
     {
