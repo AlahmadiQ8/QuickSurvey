@@ -13,12 +13,12 @@ namespace QuickSurvey.Core.SessionAggregate
         public int SessionId { get; private set; }
 
         private readonly List<string> _voters;
-        private static Regex _regex = new Regex("\\w+");
+        private static readonly Regex Regex = new("\\w+");
 
         public Choice(string text) : this()
         {
             if (string.IsNullOrEmpty(text)) throw new SessionExceptions("Choice cannot be null");
-            if (!_regex.IsMatch(text))
+            if (!Regex.IsMatch(text))
             {
                 throw new SessionExceptions("Choice can only contain a-z, A-Z, 0-9 and _");
             }
@@ -38,6 +38,17 @@ namespace QuickSurvey.Core.SessionAggregate
                 throw new SessionExceptions($"Participant {username} already voted to {Text}");
             }
             _voters.Add(username);
+        }
+
+        public bool RemoveParticipantVote(string username)
+        {
+            var existingParticipant = _voters.SingleOrDefault(p => p == username);
+            if (existingParticipant != null)
+            {
+                throw new SessionExceptions($"Participant {username} already voted to {Text}");
+            }
+
+            return _voters.Remove(username);
         }
     }
 }
