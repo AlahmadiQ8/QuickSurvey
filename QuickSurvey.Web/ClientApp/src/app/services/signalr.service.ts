@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import * as signalR from '@microsoft/signalr';
 import { AuthService } from './auth.service';
 
-export const enum ServerMethods {
-  ActiveUsersUpdated = "ActiveUsersUpdated"
+export const enum ServerMessages {
+  ActiveUsersUpdated = 'ActiveUsersUpdated',
+  VotesUpdated = 'VotesUpdated'
 }
 
-interface OnReconnectedHandler {
-  (connectionId: string | undefined): void
+export const enum ClientMessages {
+  ParticipantVoted = 'ParticipantVoted'
 }
 
-interface Callback {
-  (error: Error | undefined): void
-}
+type OnReconnectedHandler = (connectionId: string | undefined) => void;
+
+type Callback = (error: Error | undefined) => void;
 
 interface SignalRHandlers {
   onReconnectedHandler: OnReconnectedHandler,
@@ -29,7 +29,7 @@ export class SignalRService {
 
   constructor(private authService: AuthService) {
     this.accessToken = this.authService.currentUser!.accessToken;
-    console.log("this.accessToken = " + this.accessToken)
+    console.log('this.accessToken = ' + this.accessToken)
   }
 
   get connectionState() {

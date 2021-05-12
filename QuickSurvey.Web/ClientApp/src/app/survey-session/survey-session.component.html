@@ -5,13 +5,15 @@
         Current User: {{ user.username }}
     </div>
 
-    <ul  class="my-3 py-3 px-3 border">
+    <ul class="my-3 py-3 px-3 border">
         <p *ngIf="activeUsers.length">In session</p>
         <li *ngFor="let user of activeUsers"
-            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">{{user}}</li>
+            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">{{user}}
+        </li>
         <p>Not in session</p>
         <li *ngFor="let user of offlineUsers"
-            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">{{user}}</li>
+            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">{{user}}
+        </li>
     </ul>
 
     <div *ngIf="session" class="my-3 py-3 px-3 border">
@@ -20,9 +22,15 @@
         <ul>
             <li *ngFor="let choice of session!.choices; let index = index" class="block my-2">
                 <div>
-                    <button class="bg-blue-500 px-1 py-1 text-xs font-semibold tracking-wider text-white rounded hover:bg-blue-600">Select</button>
+                    <button (click)="selectVoteHandler(choice.id)"
+                        class="bg-blue-500 px-1 py-1 text-xs font-semibold tracking-wider text-white rounded hover:bg-blue-600">Select</button>
                     Choice {{index + 1}}: {{choice.text}}
                 </div>
+                <ul>
+                    <li *ngFor="let voter of choice.voters"
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                        {{voter}}</li>
+                </ul>
             </li>
         </ul>
     </div>

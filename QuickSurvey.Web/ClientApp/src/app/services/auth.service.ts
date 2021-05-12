@@ -1,12 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { WINDOW } from '../injection-tokens';
-
-export interface User {
-  sessionId: string,
-  username: string,
-  accessToken: string
-}
+import { User } from '../models';
 
 @Injectable()
 export class AuthService {

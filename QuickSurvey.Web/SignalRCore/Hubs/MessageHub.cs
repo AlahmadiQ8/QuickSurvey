@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using QuickSurvey.Core.Exceptions;
+using QuickSurvey.Core.SessionAggregate;
 using QuickSurvey.Web.Extensions;
 
 namespace QuickSurvey.Web.SignalRCore.Hubs
@@ -12,11 +15,13 @@ namespace QuickSurvey.Web.SignalRCore.Hubs
     {
         private readonly ILogger<MessageHub> _logger;
         private readonly IUserConnectionRepository _userConnections;
+        private readonly ISessionRepository _repository;
 
-        public MessageHub(ILogger<MessageHub> logger, IUserConnectionRepository userConnections)
+        public MessageHub(ILogger<MessageHub> logger, IUserConnectionRepository userConnections, ISessionRepository repository)
         {
             _logger = logger;
             _userConnections = userConnections;
+            _repository = repository;
         }
 
         [HubMethodName("NewMessage")]
@@ -24,6 +29,26 @@ namespace QuickSurvey.Web.SignalRCore.Hubs
         {
             var sessionId = Context.User.GetSessionId();
             await Clients.Group(sessionId).SendAsync("messageReceived", $"group {sessionId}", message);
+        }
+
+        [HubMethodName(SignalRClientMessages.ParticipantVoted)]
+        public async Task ParticipantVoted(int choiceId)
+        {
+            var sessionId = Context.User.GetSessionId();
+            var username = Context.UserIdentifier;
+
+            var session = await _repository.GetAsync(int.Parse(sessionId));
+
+            session.SetVote(username, choiceId);
+
+            _repository.Update(session);
+            var success = await _repository.UnitOfWork.SaveEntitiesAsync();
+            if (!success)
+            {
+                throw new Exception("Unprocessable entity");
+            }
+
+            await Clients.Group(sessionId).SendAsync(SignalRServerMessages.VotesUpdated, session.Choices.ToChoicesResponse());
         }
 
         public override async Task OnConnectedAsync()
@@ -41,7 +66,7 @@ namespace QuickSurvey.Web.SignalRCore.Hubs
 
             var activeUsers = await _userConnections.GetUsers(sessionId);
 
-            await Clients.Group(sessionId).SendAsync(SignalRServerMethods.ActiveUsersUpdated, activeUsers);
+            await Clients.Group(sessionId).SendAsync(SignalRServerMessages.ActiveUsersUpdated, activeUsers);
             await base.OnConnectedAsync();
         }
 
@@ -58,7 +83,7 @@ namespace QuickSurvey.Web.SignalRCore.Hubs
 
             var activeUsers = await _userConnections.GetUsers(sessionId);
 
-            await Clients.Group(sessionId).SendAsync(SignalRServerMethods.ActiveUsersUpdated, activeUsers);
+            await Clients.Group(sessionId).SendAsync(SignalRServerMessages.ActiveUsersUpdated, activeUsers);
             await base.OnDisconnectedAsync(exception);
         }
     }

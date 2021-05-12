@@ -1,11 +1,17 @@
-import { Component, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, ValidatorFn, Validators } from '@angular/forms';
+import { WINDOW } from '../injection-tokens';
+import { SessionRequest } from '../models';
+import { ApiService } from '../services/api.service';
+import { AuthService } from '../services/auth.service';
+import { SignalRService } from '../services/signalr.service';
 
 const defaultValidation = ['', Validators.compose([Validators.required, Validators.minLength(5), Validators.maxLength(250)])]
 
 @Component({
   selector: 'app-create-session',
   templateUrl: './create-session.component.html',
+  providers: [AuthService, SignalRService, ApiService]
 })
 export class CreateSessionComponent {
   public static MAX_CHOICE = 6;
@@ -25,7 +31,7 @@ export class CreateSessionComponent {
     return this.choices.controls.some(f => f.errors);
   }
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private apiService: ApiService, @Inject(WINDOW) private window: Window) {
     this.choices.errors
   }
 
@@ -44,8 +50,13 @@ export class CreateSessionComponent {
       this.error = "Unexpected validation error";
       return;
     }
-    const body = this.surveySessionForm.value as {title: string, choices: string[]};
-    console.log(JSON.stringify(body, null, 2));
+    const body = this.surveySessionForm.value as SessionRequest;
+    this.apiService.createSession(body).subscribe(url => {
+      if (url == null) {
+        this.error = "Unexpected network error";
+      } else
+        this.window.location.href = url;
+    })
   }
 }
 

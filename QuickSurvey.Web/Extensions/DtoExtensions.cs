@@ -12,7 +12,7 @@ namespace QuickSurvey.Web.Extensions
     {
         public static SessionResponse ToSessionResponse(this Session session)
         {
-            var choices = session.Choices.Select(c => new ChoiceResponse(c.Id, c.Text, c.Voters.ToList())).ToList();
+            var choices = session.Choices.ToChoicesResponse();
             var sessionResponse = new SessionResponse(session.Name, choices, session.Participants.Select(p => p.Username).ToList());
             return sessionResponse;
         }
@@ -22,6 +22,11 @@ namespace QuickSurvey.Web.Extensions
             var session = new Session(request.Title);
             session.AddChoices(request.Choices);
             return session;
-        } 
+        }
+
+        public static List<ChoiceResponse> ToChoicesResponse(this IReadOnlyCollection<Choice> choices)
+        {
+            return choices.Select(c => new ChoiceResponse(c.Id, c.Text, c.Voters.ToList())).ToList();
+        }
     }
 }

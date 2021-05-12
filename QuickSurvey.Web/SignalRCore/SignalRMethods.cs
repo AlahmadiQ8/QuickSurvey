@@ -5,9 +5,14 @@ using System.Threading.Tasks;
 
 namespace QuickSurvey.Web.SignalRCore
 {
-    public static class SignalRServerMethods
+    public static class SignalRServerMessages
     {
         public const string ActiveUsersUpdated = "ActiveUsersUpdated";
-        public const string FetchSession = "FetchSession";
+        public const string VotesUpdated = "VotesUpdated";
+    }
+
+    public static class SignalRClientMessages
+    {
+        public const string ParticipantVoted = "ParticipantVoted";
     }
 }

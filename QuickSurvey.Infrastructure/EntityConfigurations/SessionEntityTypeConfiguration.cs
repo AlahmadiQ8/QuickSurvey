@@ -29,7 +29,7 @@ namespace QuickSurvey.Infrastructure.EntityConfigurations
 
             // https://github.com/dotnet/efcore/issues/17471#issuecomment-526330450
             var comparer = new ValueComparer<IReadOnlyCollection<string>>(
-                (c1, c2) => c1 == c2,
+                (c1, c2) => c1.Equals(c2),
                 c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
                 c => (IReadOnlyCollection<string>)c.ToHashSet()
             );

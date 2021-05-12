@@ -76,6 +76,8 @@ namespace QuickSurvey.Core.SessionAggregate
                 throw new SessionExceptions($"No choice with id = {choiceId} found");
 ;           }
 
+            _choices.FirstOrDefault(c => c.Voters.Contains(username))?.RemoveParticipantVote(username);;
+
             choice.AddParticipantVote(participant.Username);
         }
     }

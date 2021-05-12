@@ -42,12 +42,6 @@ namespace QuickSurvey.Core.SessionAggregate
 
         public bool RemoveParticipantVote(string username)
         {
-            var existingParticipant = _voters.SingleOrDefault(p => p == username);
-            if (existingParticipant != null)
-            {
-                throw new SessionExceptions($"Participant {username} already voted to {Text}");
-            }
-
             return _voters.Remove(username);
         }
     }

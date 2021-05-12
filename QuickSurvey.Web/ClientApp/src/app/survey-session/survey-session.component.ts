@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import * as signalR from '@microsoft/signalr';
-import { SignalRService } from '../services/signalr.service';
-import { AuthService, User } from '../services/auth.service';
-import { ServerMethods } from '../services/signalr.service';
-import { ApiService, Session } from '../services/api.service';
-import { combineLatest, concat, merge, Observable, ObservableInput, pipe, Subject, Subscription } from 'rxjs';
-import { concatAll, finalize, first, map, tap, last, concatMap } from 'rxjs/operators';
+import { ClientMessages, SignalRService } from '../services/signalr.service';
+import { AuthService } from '../services/auth.service';
+import { ServerMessages } from '../services/signalr.service';
+import { ApiService } from '../services/api.service';
+import { Subject, Subscription } from 'rxjs';
+import { concatMap } from 'rxjs/operators';
+import { Choice, Session, User } from '../models';
 
 @Component({
   selector: 'app-survey-session',
@@ -66,9 +67,14 @@ export class SurveySessionComponent implements OnInit {
       this.messages.push({ username, message });
     });
 
-    this.signalRService.OnMessageReceived(ServerMethods.ActiveUsersUpdated, (activeUsers: string[]) => {
-      this.activeUsers = activeUsers.filter(u => this.user.username != u);
-      this.offlineUsers = this.session!.participants.filter(u => !this.activeUsers.includes(u))
+    this.signalRService.OnMessageReceived(ServerMessages.VotesUpdated, (choices: Choice[]) => {
+      console.log(choices);
+      this.session!.choices = choices;
+    })
+
+    this.signalRService.OnMessageReceived(ServerMessages.ActiveUsersUpdated, (activeUsers: string[]) => {
+      this.activeUsers = activeUsers.filter(u => this.user.username !== u);
+      this.offlineUsers = this.session!.participants.filter(u => !this.activeUsers.includes(u));
     })
 
     this.start().catch(err => {
@@ -92,6 +98,14 @@ export class SurveySessionComponent implements OnInit {
 
   private send(message: string): void {
     this.signalRService.SendMessage('newMessage', this.user.username, message)
+      .catch(err => {
+        console.log('error sending message');
+        console.log(err);
+      });
+  }
+
+  public selectVoteHandler(choiceId: number): void {
+    this.signalRService.SendMessage(ClientMessages.ParticipantVoted, choiceId)
       .catch(err => {
         console.log('error sending message');
         console.log(err);
