@@ -24,13 +24,6 @@ namespace QuickSurvey.Web.SignalRCore.Hubs
             _repository = repository;
         }
 
-        [HubMethodName("NewMessage")]
-        public async Task NewMessage(string username, string message)
-        {
-            var sessionId = Context.User.GetSessionId();
-            await Clients.Group(sessionId).SendAsync("messageReceived", $"group {sessionId}", message);
-        }
-
         [HubMethodName(SignalRClientMessages.ParticipantVoted)]
         public async Task ParticipantVoted(int choiceId)
         {
@@ -55,9 +48,10 @@ namespace QuickSurvey.Web.SignalRCore.Hubs
         {
             var sessionId = Context.User.GetSessionId();
 
-            if (await _userConnections.UserInGroup(sessionId, Context.UserIdentifier))
+            
+            var prevConnectionId = await _userConnections.RemoveUserConnectionFromGroup(sessionId, Context.UserIdentifier);
+            if (!string.IsNullOrEmpty(prevConnectionId))
             {
-                var prevConnectionId = await _userConnections.RemoveUserConnectionFromGroup(sessionId, Context.UserIdentifier);
                 await Groups.RemoveFromGroupAsync(prevConnectionId, sessionId);
             }
 

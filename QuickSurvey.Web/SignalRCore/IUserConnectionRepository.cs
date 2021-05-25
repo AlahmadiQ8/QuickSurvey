@@ -9,7 +9,6 @@ namespace QuickSurvey.Web.SignalRCore
     {
         Task AddUserConnectionToGroup(string group, string user, string connectionId);
         Task<string> RemoveUserConnectionFromGroup(string group, string user);
-        Task<bool> UserInGroup(string group, string user);
         Task<List<string>> GetUsers(string group);
     }
 }

@@ -21,16 +21,14 @@ namespace QuickSurvey.Infrastructure.Repositories
 
         public Task<string> RemoveUserConnectionFromGroup(string group, string user)
         {
-            var currentConnectionId = _userConnections[group][user];
-            _userConnections[group].Remove(user);
-            return Task.FromResult(currentConnectionId);
-        }
-
-        public Task<bool> UserInGroup(string group, string user)
-        {
-            if (_userConnections.ContainsKey(group)) 
-                return Task.FromResult(_userConnections[group].ContainsKey(user));
-            return Task.FromResult(false);
+            if (_userConnections.ContainsKey(group) && _userConnections[group].ContainsKey(user))
+            {
+                var currentConnectionId = _userConnections[group][user];
+                _userConnections[group].Remove(user);
+                return Task.FromResult(currentConnectionId);
+            }
+            
+            return Task.FromResult<string>(null);
         }
 
         public Task<List<string>> GetUsers(string group)

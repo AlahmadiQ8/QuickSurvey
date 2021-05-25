@@ -9,6 +9,7 @@ namespace QuickSurvey.Web.SignalRCore
     {
         public const string ActiveUsersUpdated = "ActiveUsersUpdated";
         public const string VotesUpdated = "VotesUpdated";
+        public const string UserAdded = "UserAdded";
     }
 
     public static class SignalRClientMessages

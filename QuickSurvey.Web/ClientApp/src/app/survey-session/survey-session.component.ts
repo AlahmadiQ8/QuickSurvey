@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import * as signalR from '@microsoft/signalr';
 import { ClientMessages, SignalRService } from '../services/signalr.service';
@@ -14,7 +14,7 @@ import { Choice, Session, User } from '../models';
   templateUrl: './survey-session.component.html',
   providers: [AuthService, SignalRService, ApiService]
 })
-export class SurveySessionComponent implements OnInit {
+export class SurveySessionComponent implements OnInit, OnDestroy {
   public message = new FormControl('');
   public messages: { username: string, message: string }[] = [];
   public state: signalR.HubConnectionState = signalR.HubConnectionState.Connecting;
@@ -70,12 +70,16 @@ export class SurveySessionComponent implements OnInit {
     this.signalRService.OnMessageReceived(ServerMessages.VotesUpdated, (choices: Choice[]) => {
       console.log(choices);
       this.session!.choices = choices;
-    })
+    });
+
+    this.signalRService.OnMessageReceived(ServerMessages.UserAdded, (participants: string[]) => {
+      this.session!.participants = participants;
+    });
 
     this.signalRService.OnMessageReceived(ServerMessages.ActiveUsersUpdated, (activeUsers: string[]) => {
       this.activeUsers = activeUsers.filter(u => this.user.username !== u);
       this.offlineUsers = this.session!.participants.filter(u => !this.activeUsers.includes(u));
-    })
+    });
 
     this.start().catch(err => {
       console.log('unexpected error occured')
@@ -115,5 +119,9 @@ export class SurveySessionComponent implements OnInit {
   private errorCallback = (err: Error | undefined) => {
     this.state = this.signalRService.connectionState;
     this.error = err?.message || '';
+  }
+
+  ngOnDestroy(): void {
+    this.sessionSubscription.unsubscribe();
   }
 }

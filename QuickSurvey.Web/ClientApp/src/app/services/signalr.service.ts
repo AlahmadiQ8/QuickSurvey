@@ -4,7 +4,8 @@ import { AuthService } from './auth.service';
 
 export const enum ServerMessages {
   ActiveUsersUpdated = 'ActiveUsersUpdated',
-  VotesUpdated = 'VotesUpdated'
+  VotesUpdated = 'VotesUpdated',
+  UserAdded = 'UserAdded'
 }
 
 export const enum ClientMessages {
