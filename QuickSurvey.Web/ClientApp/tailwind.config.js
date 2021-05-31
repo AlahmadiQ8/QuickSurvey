@@ -28,7 +28,12 @@ module.exports = {
         // info box
         "infotextcolor": "#bc8cff",
         "infobordercolor": "rgba(140,139,253,0.4)",
-        "infobackgroundcolor": " linear-gradient(rgba(140,139,253,0.1),rgba(140,139,253,0.1))"
+        "infobackgroundcolor": " linear-gradient(rgba(140,139,253,0.1),rgba(140,139,253,0.1))",
+
+        // error box
+        "errorboxbordercolor": "rgba(253, 56, 65, 0.4)",
+        "errorboxbgcolor": "rgba(253, 56, 65, 0.1)",
+        "errortextcolor": "rgba(253, 56, 65, .8)"
       }
     },
   },

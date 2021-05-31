@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, ValidatorFn, Validators } from '@angular/forms';
 import { WINDOW } from '../injection-tokens';
@@ -22,6 +23,7 @@ export class CreateSessionComponent {
   })
 
   public error = '';
+  public isSubmitting = false;
 
   get title(): FormControl { return this.surveySessionForm.get('title') as FormControl }
   get choices(): FormArray { return this.surveySessionForm.get('choices') as FormArray; }
@@ -46,6 +48,7 @@ export class CreateSessionComponent {
   }
 
   public onSubmit(): void {
+    this.isSubmitting = true;
     if (!this.surveySessionForm.valid) {
       this.error = "Unexpected validation error";
       return;
@@ -54,8 +57,15 @@ export class CreateSessionComponent {
     this.apiService.createSession(body).subscribe(url => {
       if (url == null) {
         this.error = "Unexpected network error";
-      } else
+      } else {
         this.window.location.href = url;
+      }
+    }, error => {
+      if (error instanceof HttpErrorResponse) {
+        this.error = error.message;
+      }
+      console.log(error)
+      this.isSubmitting = false;
     })
   }
 }
