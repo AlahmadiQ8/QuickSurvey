@@ -34,13 +34,11 @@ export class CreateSessionComponent {
   }
 
   constructor(private fb: FormBuilder, private apiService: ApiService, @Inject(WINDOW) private window: Window) {
-    this.choices.errors
   }
 
-  public addChoice() {
+  public addChoice(): void {
     this.choices.push(this.fb.control(defaultValidation[0], defaultValidation[1] as ValidatorFn));
     console.log(this.choices.errors);
-    this.title.errors
   }
 
   public removeChoice(): void {
@@ -50,7 +48,8 @@ export class CreateSessionComponent {
   public onSubmit(): void {
     this.isSubmitting = true;
     if (!this.surveySessionForm.valid) {
-      this.error = "Unexpected validation error";
+      this.surveySessionForm.markAsDirty();
+      this.surveySessionForm.markAsTouched();
       return;
     }
     const body = this.surveySessionForm.value as SessionRequest;

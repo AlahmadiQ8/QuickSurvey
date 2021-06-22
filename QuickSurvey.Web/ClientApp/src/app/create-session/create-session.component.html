@@ -1,8 +1,6 @@
 <form [formGroup]="surveySessionForm" (ngSubmit)="onSubmit()"
     class="container mx-auto mt-2 p-3 max-w-lg">
 
-
-
     <div class="md:flex md:items-center my-6">
         <input formControlName="title"
             class="block bg-bgcolor border-b-2 border-bgcolor w-full px-3 py-2 transition duration-100 ease-in-out shadow-sm focus:border-b-2 focus:border-focusbordercolor focus:outline-none text-textcolor placeholder-gray-500"
@@ -73,7 +71,7 @@
 
     <button
         class="my-3 bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline disabled:border-0 disabled:opacity-50 disabled:cursor-not-allowed"
-        [disabled]="!surveySessionForm.valid && isSubmitting" type="submit">
+        [disabled]="isSubmitting || !surveySessionForm.valid" type="submit">
         Create
     </button>
 

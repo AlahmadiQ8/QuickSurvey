@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - WebApplication1</title>
+
+    <environment include="Development">
+        <link rel="stylesheet" href="/styles.css"   />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" asp-href-include="/*.css" />
+    </environment>
+</head>
+<body class="bg-bgcolor">
+    <div class="container mx-auto">
+        @RenderBody()
+    </div>
+        <environment include="Development">
+            <script src="~/styles.js" asp-append-version="true"></script>
+            <script src="~/main.js" asp-append-version="true"></script>
+        </environment>
+        <environment exclude="Development">
+            <script asp-src-include="/*.js" asp-append-version="true"></script>
+        </environment>
+</body>
+</html>
