@@ -32,6 +32,7 @@ namespace QuickSurvey.Tests
         {
             // Arrange
             var session = new Session("Friday Night");
+            Console.WriteLine("Hello World");
 
 
             // Act
