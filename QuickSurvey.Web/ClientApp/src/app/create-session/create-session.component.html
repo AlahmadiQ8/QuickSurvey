@@ -1,0 +1,79 @@
+<form [formGroup]="surveySessionForm" (ngSubmit)="onSubmit()"
+    class="container mx-auto mt-2 p-3 max-w-lg">
+
+    <div class="md:flex md:items-center my-6">
+        <input formControlName="title"
+            class="block bg-bgcolor border-b-2 border-bgcolor w-full px-3 py-2 transition duration-100 ease-in-out shadow-sm focus:border-b-2 focus:border-focusbordercolor focus:outline-none text-textcolor placeholder-gray-500"
+            id="title" type="text" placeholder="Ask a question">
+    </div>
+
+    <div class="border-b-2 border-bordercolor my-2"></div>
+
+    <div formArrayName="choices">
+        <div class="md:flex md:items-center my-6" *ngFor="let choice of choices.controls; let i = index">
+            <input [formControlName]="i" type="text" name="choice {{i}}" id="choice_{{i}}"
+                class="block bg-bgcolor border border-bordercolor w-full px-3 py-2 transition duration-100 ease-in-out shadow-sm focus:ring-2 focus:ring-focusbordercolor rounded focus:outline-none text-textcolor placeholder-gray-500"
+                placeholder="Choice {{i + 1}}">
+        </div>
+    </div>
+
+    <div class="flex mb-2">
+        <button
+            class="my-1 mr-3 block focus:ring-2 focus:ring-bordercolor focus:outline-none"
+            type="button" (click)="addChoice()" [disabled]="this.choices.length === maxChoice">
+            <svg width="2rem" fill="#bc8cff" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19.75 11H13V4.25a1 1 0 10-2 0V11H4.25a1 1 0 100 2H11v6.75a1 1 0 102 0V13h6.75a1 1 0 100-2z"/>
+            </svg>
+        </button>
+        <button
+            class="my-1 focus:ring-2 focus:ring-bordercolor focus:outline-none"
+            type="button" [disabled]="choices.length <= 2" (click)="removeChoice()" [ngClass]="choices.length <= 2 ? 'hidden' : 'block'">
+            <svg width="2rem" stroke-linecap="round" stroke-opacity="1" stroke="#bc8cff" fill="#bc8cff"  viewBox="0 0 500 500" aria-hidden="true">
+                <path stroke-width="45" d="M100 251l300-1"/>
+              </svg>
+        </button>
+    </div>
+
+    <div >
+        <li class="flex items-center " *ngIf="title.dirty || title.touched">
+            <div [ngClass]="title.errors ? 'text-red-700' : ' text-green-700'"
+                class="rounded-full p-1 fill-current">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path *ngIf="!title.errors" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M5 13l4 4L19 7" />
+                    <path *ngIf="title.errors" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12" />
+
+                </svg>
+            </div>
+            <span [ngClass]="title.errors ? 'text-red-700' : 'text-green-700'" class="font-medium text-sm ml-3">Title
+                must be between 5 and 20 characters</span>
+        </li>
+        <li class="flex items-center " *ngIf="choices.dirty || choices.touched">
+            <div [ngClass]="hasChoicesErrors ? 'text-red-700' : 'text-green-700'"
+                class="rounded-full p-1 fill-current">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path *ngIf="!hasChoicesErrors" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M5 13l4 4L19 7" />
+                    <path *ngIf="hasChoicesErrors" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12" />
+
+                </svg>
+            </div>
+            <span [ngClass]="hasChoicesErrors ? 'text-red-700' : 'text-green-700'" class="font-medium text-sm ml-3">Choices
+                must be between 5 and 20 characters</span>
+        </li>
+    </div>
+
+    <div *ngIf="error" class="my-2 border rounded border-errorboxbordercolor bg-errorboxbgcolor text-errortextcolor py-2 px-3 bg-opacity-90">
+        {{error}}
+    </div>
+
+    <button
+        class="my-3 bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline disabled:border-0 disabled:opacity-50 disabled:cursor-not-allowed"
+        [disabled]="isSubmitting || !surveySessionForm.valid" type="submit">
+        Create
+    </button>
+
+    <p>Form Status: {{ surveySessionForm.status }}</p>
+</form>

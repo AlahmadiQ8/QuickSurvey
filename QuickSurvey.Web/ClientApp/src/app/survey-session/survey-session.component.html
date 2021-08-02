@@ -1,0 +1,47 @@
+<div class="container mt-20 p-4 mx-auto border-gray-300 rounded-md border max-w-lg">
+    <h1>Chat Box</h1>
+
+    <div class="my-3 py-3 px-3 border">
+        Current User: {{ user.username }}
+    </div>
+
+    <ul class="my-3 py-3 px-3 border">
+        <p *ngIf="activeUsers.length">In session</p>
+        <li *ngFor="let user of activeUsers"
+            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">{{user}}
+        </li>
+        <p>Not in session</p>
+        <li *ngFor="let user of offlineUsers"
+            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">{{user}}
+        </li>
+    </ul>
+
+    <div *ngIf="session" class="my-3 py-3 px-3 border">
+        <h2 class="text-3xl font-bold">{{session!.title}}</h2>
+
+        <ul>
+            <li *ngFor="let choice of session!.choices; let index = index" class="block my-2">
+                <div>
+                    <button (click)="selectVoteHandler(choice.id)"
+                        class="bg-blue-500 px-1 py-1 text-xs font-semibold tracking-wider text-white rounded hover:bg-blue-600">Select</button>
+                    Choice {{index + 1}}: {{choice.text}}
+                </div>
+                <ul>
+                    <li *ngFor="let voter of choice.voters"
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                        {{voter}}</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <input type="text" (keydown.enter)="onEnter($event)"
+        class="w-full mt-2 mb-6 px-4 py-2 border rounded-lg text-gray-700 focus:outline-none" [formControl]="message">
+    <p *ngIf="error" class="bg-red-100 border border-red-300 p-2 rounded text-red-600">{{error}}</p>
+    <div class="divide-y text-sm font-mono">
+        <div class="py-2 flex" *ngFor="let mg of messages">
+            <div class="w-1/2">{{mg.username}}:</div>
+            <div class="w-1/2">{{mg.message}}</div>
+        </div>
+    </div>
+</div>

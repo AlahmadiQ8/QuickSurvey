@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using QuickSurvey.Core.Entities;
 using QuickSurvey.Core.SeedWork;
 using QuickSurvey.Core.SessionAggregate;
 using QuickSurvey.Infrastructure.EntityConfigurations;

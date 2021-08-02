@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\QuickSurvey.Domain\QuickSurvey.Core.csproj" />
     <ProjectReference Include="..\QuickSurvey.Infrastructure\QuickSurvey.Infrastructure.csproj" />
+    <ProjectReference Include="..\QuickSurvey.Web\QuickSurvey.Web.csproj" />
   </ItemGroup>
 
 </Project>
